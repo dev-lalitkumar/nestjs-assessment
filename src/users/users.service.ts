@@ -4,13 +4,16 @@ import { User } from "./user.entity"
 import { UserCreateDto } from "./dto/user-create.dto"
 import { UserUpdateDto } from "./dto/user-update.dto"
 import { UserListDto } from "./dto/user-list.dto"
+import { Review } from "src/reviews/review.entity"
 
 @Injectable()
 export class UsersService {
   private usersRepository: Repository<User>
+  private reviewsRepository: Repository<Review>
 
   constructor(private readonly dataSource: DataSource) {
     this.usersRepository = this.dataSource.getRepository(User)
+    this.reviewsRepository = this.dataSource.getRepository(Review)
   }
 
   async list(userListDto: UserListDto) {
@@ -32,6 +35,45 @@ export class UsersService {
     } catch (error) {
       console.error(error)
       throw new InternalServerErrorException(`Failed to fetch the users`)
+    }
+  }
+
+  async skills(id: string) {
+    try {
+      const reviews = await this.reviewsRepository
+        .createQueryBuilder("review")
+        .getMany()
+
+      const data = {}
+      for (const item of reviews) {
+        if (!data[item.skillId]) {
+          data[item.skillId] = {
+            easy: [],
+            medium: [],
+            hard: []
+          }
+        }
+        data[item.skillId][item.difficultyLevel].push(item.rating)
+      }
+      const skills = []
+      for (const key in data) {
+        const easy = data[key].easy.reduce((acc, item) => acc + item, 0)
+        const medium = 2 * data[key].medium.reduce((acc, item) => acc + item, 0)
+        const hard = 3 * data[key].hard.reduce((acc, item) => acc + item, 0)
+        skills.push({
+          skillId: key,
+          rating: (
+            (easy + medium + hard) /
+            (data[key].easy.length +
+              2 * data[key].medium.length +
+              3 * data[key].hard.length)
+          ).toFixed(1)
+        })
+      }
+      return skills
+    } catch (error) {
+      console.error(error)
+      throw new InternalServerErrorException(`Failed to fetch the skills`)
     }
   }
 
