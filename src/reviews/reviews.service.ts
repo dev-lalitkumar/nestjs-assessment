@@ -13,6 +13,45 @@ export class ReviewsService {
     this.reviewsRepository = this.dataSource.getRepository(Review)
   }
 
+  async onModuleInit() {
+    try {
+      const reviewsCount = await this.reviewsRepository.count()
+      if (reviewsCount === 0) {
+        const reviews: any = [
+          {
+            skillId: 1,
+            difficultyLevel: "easy",
+            question: "What is node?",
+            response: "Answer",
+            rating: 5
+          },
+          {
+            skillId: 1,
+            difficultyLevel: "easy",
+            question: "What is express?",
+            response: "Answer",
+            rating: 5
+          },
+          {
+            skillId: 1,
+            difficultyLevel: "hard",
+            question: "How to handle child processes in node?",
+            response: "Answer",
+            rating: 4
+          },
+          {
+            skillId: 1,
+            difficultyLevel: "medium",
+            question: "What are streams?",
+            response: "Answer",
+            rating: 4
+          }
+        ]
+        await this.reviewsRepository.save(reviews)
+      }
+    } catch (error) {}
+  }
+
   async list(reviewListDto: ReviewListDto) {
     const { page = 1, perPage = 15 } = reviewListDto
     try {
