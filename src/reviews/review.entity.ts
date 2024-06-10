@@ -9,6 +9,12 @@ import {
 import { QuestionDifficultyLevelEnum } from "./enums/question-difficulty-level.enum"
 import { User } from "src/users/user.entity"
 
+/**
+ * We can have seperate tables for questions, answers & ratings with relationships
+ * with User ( as Candidate &  as Reviewer ),
+ * I am using this structure as the assessment suggested.
+ */
+
 @Entity()
 export class Review {
   @PrimaryGeneratedColumn("uuid")
