@@ -1,4 +1,4 @@
-# Foobar
+# Nest.Js Assessment
 
 Here are the details of project
 
@@ -23,13 +23,8 @@ DB_USERNAME="root"
 DB_PASSWORD="root"
 ```
 
-## API
+## Swagger (Open API)
 
 ```
-[GET] http://localhost:3000/auth/login
----------------------------------------
-Body:{
-  "username": "candidate@gmail.com",
-  "password": "password"
-}
+[Goto] http://localhost:3000
 ```
