@@ -27,7 +27,8 @@ export class AuthService {
       if (!user) throw new UnauthorizedException(`Invalid username or password`)
       const payload = { username: user.email, sub: user.id }
       return {
-        access_token: this.jwtService.sign(payload)
+        access_token: this.jwtService.sign(payload),
+        user
       }
     } catch (error) {
       console.error(error)
