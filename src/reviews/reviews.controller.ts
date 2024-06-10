@@ -17,9 +17,12 @@ import { JwtAuthGuard } from "src/auth/jwt-auth.guard"
 import { AuthRoleGuard } from "src/auth/auth-role.guard"
 import { UserRoleEnum } from "src/users/enums/user-role.enum"
 import { ReviewRateDto } from "./dto/review-rate.dto"
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger"
 
 @Controller("reviews")
 @UseGuards(JwtAuthGuard)
+@ApiTags("Reviews")
+@ApiBearerAuth()
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
