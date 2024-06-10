@@ -1,8 +1,7 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator"
-import { QuestionDifficultyLevelEnum } from "../enums/question-difficulty-level.enum"
+import { IsNotEmpty, IsNumber } from "class-validator"
 
 export class ReviewRateDto {
   @IsNumber()
-  @IsOptional()
+  @IsNotEmpty()
   rating: number
 }

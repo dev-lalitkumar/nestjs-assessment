@@ -16,6 +16,7 @@ import { ReviewListDto } from "./dto/review-list.dto"
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard"
 import { AuthRoleGuard } from "src/auth/auth-role.guard"
 import { UserRoleEnum } from "src/users/enums/user-role.enum"
+import { ReviewRateDto } from "./dto/review-rate.dto"
 
 @Controller("reviews")
 @UseGuards(JwtAuthGuard)
@@ -49,11 +50,8 @@ export class ReviewsController {
 
   @Patch(":id/rate")
   @UseGuards(AuthRoleGuard(UserRoleEnum.REVIEWER))
-  async rate(
-    @Param("id") id: string,
-    @Body() reviewUpdateDto: ReviewUpdateDto
-  ) {
-    return await this.reviewsService.update(id, reviewUpdateDto)
+  async rate(@Param("id") id: string, @Body() reviewRateDto: ReviewRateDto) {
+    return await this.reviewsService.rate(id, reviewRateDto)
   }
 
   @Delete(":id")
