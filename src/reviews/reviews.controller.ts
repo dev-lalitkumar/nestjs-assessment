@@ -5,19 +5,21 @@ import {
   Get,
   Param,
   Patch,
-  Post
+  Post,
+  Query
 } from "@nestjs/common"
 import { ReviewsService } from "./reviews.service"
 import { ReviewCreateDto } from "./dto/review-create.dto"
 import { ReviewUpdateDto } from "./dto/review-update.dto"
+import { ReviewListDto } from "./dto/review-list.dto"
 
 @Controller("reviews")
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 
   @Get()
-  async list() {
-    return await this.reviewsService.list()
+  async list(@Query() reviewListDto: ReviewListDto) {
+    return await this.reviewsService.list(reviewListDto)
   }
 
   @Post()
