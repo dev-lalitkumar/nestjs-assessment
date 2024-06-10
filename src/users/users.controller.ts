@@ -5,19 +5,21 @@ import {
   Get,
   Param,
   Patch,
-  Post
+  Post,
+  Query
 } from "@nestjs/common"
 import { UsersService } from "./users.service"
 import { UserCreateDto } from "./dto/user-create.dto"
 import { UserUpdateDto } from "./dto/user-update.dto"
+import { UserListDto } from "./dto/user-list.dto"
 
 @Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async list() {
-    return await this.usersService.list()
+  async list(@Query() userListDto: UserListDto) {
+    return await this.usersService.list(userListDto)
   }
 
   @Post()

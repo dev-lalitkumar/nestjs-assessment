@@ -15,6 +15,12 @@ export class User {
   @Column()
   name: string
 
+  @Column({ unique: true })
+  email: string
+
+  @Column()
+  password: string
+
   @Column({ type: "enum", enum: UserRoleEnum, nullable: false })
   role: UserRoleEnum
 
