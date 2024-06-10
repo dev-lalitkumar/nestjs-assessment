@@ -6,14 +6,17 @@ import {
   Param,
   Patch,
   Post,
-  Query
+  Query,
+  UseGuards
 } from "@nestjs/common"
 import { ReviewsService } from "./reviews.service"
 import { ReviewCreateDto } from "./dto/review-create.dto"
 import { ReviewUpdateDto } from "./dto/review-update.dto"
 import { ReviewListDto } from "./dto/review-list.dto"
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard"
 
 @Controller("reviews")
+@UseGuards(JwtAuthGuard)
 export class ReviewsController {
   constructor(private readonly reviewsService: ReviewsService) {}
 

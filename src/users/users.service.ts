@@ -5,6 +5,7 @@ import { UserCreateDto } from "./dto/user-create.dto"
 import { UserUpdateDto } from "./dto/user-update.dto"
 import { UserListDto } from "./dto/user-list.dto"
 import { Review } from "src/reviews/review.entity"
+import * as bcrypt from "bcrypt"
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,18 @@ export class UsersService {
   constructor(private readonly dataSource: DataSource) {
     this.usersRepository = this.dataSource.getRepository(User)
     this.reviewsRepository = this.dataSource.getRepository(Review)
+  }
+
+  async findOne(username: string): Promise<User> {
+    try {
+      const user = await this.usersRepository.findOne({
+        where: { email: username }
+      })
+      return user
+    } catch (error) {
+      console.error(error)
+      return null
+    }
   }
 
   async list(userListDto: UserListDto) {
@@ -80,14 +93,15 @@ export class UsersService {
   async create(userCreateDto: UserCreateDto) {
     const { email, name, password, role } = userCreateDto
     try {
+      const hashedPassword = await bcrypt.hash(password, await bcrypt.genSalt())
       let user = this.usersRepository.create({
         email,
         name,
         role,
-        password
+        password: hashedPassword
       })
-      user = await this.usersRepository.save(user)
-      return user
+      const { password: p, ...rest } = await this.usersRepository.save(user)
+      return rest
     } catch (error) {
       console.error(error)
       throw new InternalServerErrorException(`Failed to create user`)
@@ -102,7 +116,8 @@ export class UsersService {
       if (name) user.name = name
       if (role) user.role = role
       if (password) user.password = password
-      return await this.usersRepository.save(user)
+      const { password: p, ...rest } = await this.usersRepository.save(user)
+      return rest
     } catch (error) {
       console.error(error)
       throw new InternalServerErrorException(`Failed to update the user`)

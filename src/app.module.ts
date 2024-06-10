@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config"
 import { TypeOrmModule } from "@nestjs/typeorm"
 import { UsersModule } from "./users/users.module"
 import { ReviewsModule } from "./reviews/reviews.module"
+import { AuthModule } from "./auth/auth.module"
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ReviewsModule } from "./reviews/reviews.module"
         synchronize: true
       })
     }),
+    AuthModule,
     UsersModule,
     ReviewsModule
   ],
