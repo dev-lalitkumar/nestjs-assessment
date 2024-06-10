@@ -25,11 +25,6 @@ export class UsersController {
     return await this.usersService.list(userListDto)
   }
 
-  @Get(":id/skills")
-  async skills(@Param("id") id: string) {
-    return await this.usersService.skills(id)
-  }
-
   @Post()
   async create(@Body() userCreateDto: UserCreateDto) {
     return await this.usersService.create(userCreateDto)

@@ -6,6 +6,7 @@ import { UserUpdateDto } from "./dto/user-update.dto"
 import { UserListDto } from "./dto/user-list.dto"
 import { Review } from "src/reviews/review.entity"
 import * as bcrypt from "bcrypt"
+import { UserRoleEnum } from "./enums/user-role.enum"
 
 @Injectable()
 export class UsersService {
@@ -15,6 +16,28 @@ export class UsersService {
   constructor(private readonly dataSource: DataSource) {
     this.usersRepository = this.dataSource.getRepository(User)
     this.reviewsRepository = this.dataSource.getRepository(Review)
+  }
+
+  async onModuleInit() {
+    try {
+      const usersCount = await this.usersRepository.count()
+      if (usersCount === 0) {
+        const candidate = this.usersRepository.create({
+          email: "candidate@gmail.com",
+          name: "Aman",
+          role: UserRoleEnum.CANDIDATE,
+          password: await bcrypt.hash("password", await bcrypt.genSalt())
+        })
+        await this.usersRepository.save(candidate)
+        const reviewer = this.usersRepository.create({
+          email: "reviewer@gmail.com",
+          name: "Deepak",
+          role: UserRoleEnum.REVIEWER,
+          password: await bcrypt.hash("password", await bcrypt.genSalt())
+        })
+        await this.usersRepository.save(reviewer)
+      }
+    } catch (error) {}
   }
 
   async findOne(username: string): Promise<User> {
@@ -48,45 +71,6 @@ export class UsersService {
     } catch (error) {
       console.error(error)
       throw new InternalServerErrorException(`Failed to fetch the users`)
-    }
-  }
-
-  async skills(id: string) {
-    try {
-      const reviews = await this.reviewsRepository
-        .createQueryBuilder("review")
-        .getMany()
-
-      const data = {}
-      for (const item of reviews) {
-        if (!data[item.skillId]) {
-          data[item.skillId] = {
-            easy: [],
-            medium: [],
-            hard: []
-          }
-        }
-        data[item.skillId][item.difficultyLevel].push(item.rating)
-      }
-      const skills = []
-      for (const key in data) {
-        const easy = data[key].easy.reduce((acc, item) => acc + item, 0)
-        const medium = 2 * data[key].medium.reduce((acc, item) => acc + item, 0)
-        const hard = 3 * data[key].hard.reduce((acc, item) => acc + item, 0)
-        skills.push({
-          skillId: key,
-          rating: (
-            (easy + medium + hard) /
-            (data[key].easy.length +
-              2 * data[key].medium.length +
-              3 * data[key].hard.length)
-          ).toFixed(1)
-        })
-      }
-      return skills
-    } catch (error) {
-      console.error(error)
-      throw new InternalServerErrorException(`Failed to fetch the skills`)
     }
   }
 

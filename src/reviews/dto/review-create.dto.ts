@@ -17,8 +17,4 @@ export class ReviewCreateDto {
   @IsString()
   @IsNotEmpty()
   response: string
-
-  @IsNumber()
-  @IsNotEmpty()
-  rating: number
 }

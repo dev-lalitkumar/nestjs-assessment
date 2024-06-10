@@ -17,8 +17,4 @@ export class ReviewUpdateDto {
   @IsString()
   @IsOptional()
   response: string
-
-  @IsNumber()
-  @IsOptional()
-  rating: number
 }
